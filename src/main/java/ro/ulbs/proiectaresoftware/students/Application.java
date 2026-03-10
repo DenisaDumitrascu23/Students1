@@ -2,6 +2,8 @@ package ro.ulbs.proiectaresoftware.students;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Application {
 
@@ -20,7 +22,7 @@ public class Application {
         Student s3 = new Student(120, "Alis", "Popa", "TI21/2");
         Student s4 = new Student(122, "Mihai", "Vecerdea", "TI22/1");
         Student s5 = new Student(122, "Eugen", "Uritescu", "TI22/2");
-        List<Student> studenti = new ArrayList<>();
+        Set<Student> studenti = new HashSet<>();
         studenti.add(s1);
         studenti.add(s2);
         studenti.add(s3);
@@ -36,7 +38,7 @@ public class Application {
 
         Student cautat1 = new Student(120, "Alis", "Popa", "TI21/2");
         Student cautat2 = new Student(112, "Ana", "Popescu", "TI21/1");
-        System.out.println("Student 1 exista: " + existaStudent(studenti, cautat1));
-        System.out.println("Student 2 exista: " + existaStudent(studenti, cautat2));
+        System.out.println("Student 1 exista: " + studenti.contains(cautat1));
+        System.out.println("Student 2 exista: " + studenti.contains(cautat2));
     }
 }
