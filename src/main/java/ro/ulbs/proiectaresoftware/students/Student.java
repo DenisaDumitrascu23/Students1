@@ -35,7 +35,7 @@ public class Student {
 
     @Override
     public String toString(){
-        return String.format("%14d %20s %8s",this.nrmatricol, this.prenume+" " + this.nume , this.formatieDeStudiu , this.nota);
+        return String.format("%14d %20s %8s %5.2f\"",this.nrmatricol, this.prenume+" " + this.nume , this.formatieDeStudiu , this.nota);
     }
 
     @Override
