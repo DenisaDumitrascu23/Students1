@@ -9,12 +9,9 @@ public class Application {
     public static void main(String[] args) {
 
         try {
-            // citire din fisier
             List<String> lines = Files.readAllLines(Paths.get("studenti_in.txt"));
+            Map<Integer, Student> tineri = new HashMap<>();
 
-            List<Student> studenti = new ArrayList<>();
-
-            // transformare in obiecte Student
             for (String line : lines) {
                 String[] parts = line.split(",");
 
@@ -25,31 +22,57 @@ public class Application {
                         parts[3]
                 );
 
-                studenti.add(s);
+                tineri.put(s.getNrmatricol(), s);
             }
 
-            studenti.sort(
-                    Comparator.comparing(Student::getFormatieDeStudiu)
-                            .thenComparing(Student::getNume)
-            );
+            List<String> noteLines = Files.readAllLines(Paths.get("note_anon.txt"));
 
-            // scriere in fisier (cerinta 3.5.3)
-            List<String> out = new ArrayList<>();
-            for (Student s : studenti) {
-                out.add(s.toString());
+            for (String line : noteLines) {
+                String[] parts = line.split(",");
+
+                int nrMat = Integer.parseInt(parts[0]);
+                double nota = Double.parseDouble(parts[1]);
+
+                Student s = tineri.get(nrMat);
+
+                if (s != null) {
+                    s.setNota(nota);
+                }
             }
 
-            Files.write(Paths.get("studenti_out_sorted.txt"), out);
-            //Files.write(Paths.get("studenti_out.txt"), out);
-
-            // afisare
-            System.out.println("Lista sortata:");
-            for (Student s : studenti) {
+            System.out.println("Studenti cu note:");
+            for (Student s : tineri.values()) {
                 System.out.println(s);
             }
+
+            float notaM = gasesteNota("Bianca", "Popescu", tineri);
+            float notaN = gasesteNota("Ioan", "Popa", tineri);
+
+            System.out.println("Nota Bianca Popescu: " + notaM);
+            System.out.println("Nota Ioan Popa: " + notaN);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static float gasesteNota(String prenume, String nume, Map<Integer, Student> tineri) {
+
+        Map<String, Student> map = new HashMap<>();
+
+        for (Student s : tineri.values()) {
+            String cheie = s.getPrenume() + "-" + s.getNume();
+            map.put(cheie, s);
+        }
+
+        String cheieCautata = prenume + "-" + nume;
+
+        Student s = map.get(cheieCautata);
+
+        if (s != null) {
+            return (float) s.getNota();
+        }
+
+        return 0.0f;
     }
 }
