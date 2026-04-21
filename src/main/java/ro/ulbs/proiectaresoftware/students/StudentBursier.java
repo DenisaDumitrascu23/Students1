@@ -4,13 +4,12 @@ import java.util.Objects;
 
 public class StudentBursier extends Student {
 
-    double cuantumBursa;
+    private final double cuantumBursa;
 
     public StudentBursier(int nrmatricol, String prenume, String nume,
                           String formatieDeStudiu, double nota, double cuantumBursa) {
 
-        super(nrmatricol, prenume, nume, formatieDeStudiu);
-        this.nota = nota;
+        super(nrmatricol, prenume, nume, formatieDeStudiu, nota);
         this.cuantumBursa = cuantumBursa;
     }
 
