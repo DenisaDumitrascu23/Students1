@@ -1,5 +1,12 @@
 package ro.ulbs.proiectaresoftware.students;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -58,6 +65,14 @@ public class Application {
 
             List<Student> studentiSortati = new ArrayList<>(tineri.values());
             studentiSortati.sort((s1, s2) -> Integer.compare(s1.getNrmatricol(), s2.getNrmatricol()));
+
+            salveazaStudentiInExcel(studentiSortati, "laborator8_students.xls");
+            List<Student> studentiDinExcel = citesteStudentiDinExcel("laborator8_students.xls");
+
+            System.out.println("\nStudenti cititi din Excel:");
+            for (Student s : studentiDinExcel) {
+                System.out.println(s);
+            }
 
             List<List<Student>> formatii = imparteInDouaFormatii(studentiSortati, "FORM_1", "FORM_2");
             List<Student> listaNoua = new ArrayList<>();
@@ -170,6 +185,53 @@ public class Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void salveazaStudentiInExcel(List<Student> studenti, String numeFisier) throws IOException {
+        try (Workbook workbook = new HSSFWorkbook(); FileOutputStream out = new FileOutputStream(numeFisier)) {
+            Sheet sheet = workbook.createSheet("Studenti");
+            Row header = sheet.createRow(0);
+            header.createCell(0).setCellValue("nrmatricol");
+            header.createCell(1).setCellValue("prenume");
+            header.createCell(2).setCellValue("nume");
+            header.createCell(3).setCellValue("formatie");
+            header.createCell(4).setCellValue("nota");
+
+            for (int i = 0; i < studenti.size(); i++) {
+                Student s = studenti.get(i);
+                Row row = sheet.createRow(i + 1);
+                row.createCell(0).setCellValue(s.getNrmatricol());
+                row.createCell(1).setCellValue(s.getPrenume());
+                row.createCell(2).setCellValue(s.getNume());
+                row.createCell(3).setCellValue(s.getFormatieDeStudiu());
+                row.createCell(4).setCellValue(s.getNota());
+            }
+
+            workbook.write(out);
+        }
+    }
+
+    public static List<Student> citesteStudentiDinExcel(String numeFisier) throws IOException {
+        List<Student> studenti = new ArrayList<>();
+
+        try (Workbook workbook = new HSSFWorkbook(new FileInputStream(numeFisier))) {
+            Sheet sheet = workbook.getSheetAt(0);
+
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row != null) {
+                    studenti.add(new Student(
+                            (int) row.getCell(0).getNumericCellValue(),
+                            row.getCell(1).getStringCellValue(),
+                            row.getCell(2).getStringCellValue(),
+                            row.getCell(3).getStringCellValue(),
+                            row.getCell(4).getNumericCellValue()
+                    ));
+                }
+            }
+        }
+
+        return studenti;
     }
 }
 
