@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,6 +22,48 @@ public class Application {
     public static void main(String[] args) {
 
         try {
+            List<Student> studentiCuNote = Arrays.asList(
+                    new Student(1025, "Andrei", "Popa", "ISM141/2", 8.70),
+                    new Student(1024, "Ioan", "Mihalcea", "ISM141/1", 10),
+                    new Student(1026, "Anamaria", "Prodan", "TI131/1", 8.90),
+                    new Student(1029, "Bianca", "Popescu", "TI131/1,", 10),
+                    new Student(1029, "Maria", "Pana", "TI131/2,", 4.10),
+                    new Student(1029, "Gabriela", "Mohanu", "TI131/2,", 7.33),
+                    new Student(1029, "Marius", "Nasta", "TI131/2,", 3.20),
+                    new Student(1029, "Marius", "Nasta", "TI131/1,", 5.12),
+                    new Student(1029, "Andrei", "Dobrescu", "TI131/2,", 2.22)
+            );
+
+            List<Student> cu10 = studentiCuNote.stream()
+                    .filter(s -> s.getNota() == 10)
+                    .toList();
+
+            List<Student> sub5 = studentiCuNote.stream()
+                    .filter(s -> s.getNota() < 5)
+                    .toList();
+
+            List<Student> cuNota4 = studentiCuNote.stream()
+                    .map(s -> s.getNota() < 4 ? s.cuNota(4) : s)
+                    .toList();
+
+            double sumaNotelor = studentiCuNote.stream()
+                    .mapToDouble(Student::getNota)
+                    .sum();
+
+            double mediaNotelor = sumaNotelor / studentiCuNote.size();
+
+            System.out.println("Studentii cu nota 10:");
+            cu10.forEach(System.out::println);
+
+            System.out.println("\nStudentii cu nota sub 5:");
+            sub5.forEach(System.out::println);
+
+            System.out.println("\nLista dupa transformare (nota < 4 devine 4):");
+            cuNota4.forEach(System.out::println);
+
+            System.out.println("\nSuma notelor: " + sumaNotelor);
+            System.out.println("Media notelor: " + mediaNotelor);
+
             List<String> lines = Files.readAllLines(Paths.get("studenti_in.txt"));
             Map<Integer, Student> tineri = new HashMap<>();
 
