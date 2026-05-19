@@ -5,7 +5,7 @@ import java.util.List;
 
 public class AplicatieCuStrategy {
     public static void main(String... args) {
-        List<Student> studenti = Arrays.asList(
+        List<Student> studentiCuNote = Arrays.asList(
                 new Student(1025, "Andrei", "Popa", "ISM141/2", 8.70),
                 new Student(1024, "Ioan", "Mihalcea", "ISM141/1", 10),
                 new Student(1026, "Anamaria", "Prodan", "TI131/1", 8.90),
@@ -17,29 +17,19 @@ public class AplicatieCuStrategy {
                 new Student(1029, "Andrei", "Dobrescu", "TI131/2", 2.22)
         );
 
-        Exporter exporter = new Exporter();
+        // Lista de strategii
+        List<IStudentiExport> strategies = Arrays.asList(
+                new StudentiInConsola(),
+                new StudentiInFiserText("studentiStrategyText.txt"),
+                new StudentiInFisierXlsx("studentiStrategyExcel.xlsx")
+        );
 
-        IStudentiExport strategyConsole = new StudentiInConsola();
-        exporter.startExport(strategyConsole, studenti);
-
-        IStudentiExport strategyFisierText = new StudentiInFiserText("studentiStrategyText.txt");
-        exporter.startExport(strategyFisierText, studenti);
-
-        IStudentiExport strategyFisierExcel = new StudentiInFisierXlsx("studentiStrategyExcel.xlsx");
-        exporter.startExport(strategyFisierExcel, studenti);
-
-        ImportStrategy importText = new StudentiDinFiserText();
-        List<Student> studentiDinText = importText.importa("studentiStrategyText.txt");
-        System.out.println("\nCititi din text:");
-        for (Student s : studentiDinText) {
-            System.out.println(s);
-        }
-
-        ImportStrategy importXlsx = new StudentiDinFiserXlsx();
-        List<Student> studentiDinXlsx = importXlsx.importa("studentiStrategyExcel.xlsx");
-        System.out.println("\nCititi din XLSX:");
-        for (Student s : studentiDinXlsx) {
-            System.out.println(s);
+        // Iterez prin fiecare strategie și o înveliș cu decoratorul
+        for (IStudentiExport strategy : strategies) {
+            TimeExecutionDecorator decorator = new TimeExecutionDecorator(strategy, studentiCuNote);
+            long time = decorator.executionTime(studentiCuNote);
+            System.out.println("Execution time: " + time + " ms for " + strategy.getClass().getSimpleName());
+            System.out.println();
         }
     }
 }

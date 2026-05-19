@@ -16,9 +16,9 @@ public class StudentiDinFiserXlsx implements ImportStrategy {
         List<Student> studenti = new ArrayList<>();
 
         try {
-            FileInputStream file = new FileInputStream(numeFisier);
-            Workbook workbook = new XSSFWorkbook(file);
-            Sheet sheet = workbook.getSheetAt(0);
+            FileInputStream file = new FileInputStream(numeFisier); //  "studenti.xlsx"
+            Workbook workbook = new XSSFWorkbook(file); //  workbook-ul pentru fisierul xlsx
+            Sheet sheet = workbook.getSheetAt(0); //    prima foaie din workbook
 
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
